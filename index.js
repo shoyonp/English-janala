@@ -1,3 +1,8 @@
+const creatElement = (arr) => {
+  const htmlElements = arr.map((el) => `<span class='btn'>${el}</span>`);
+  return htmlElements.join(" ");
+};
+
 const loadLessons = () => {
   fetch("https://openapi.programming-hero.com/api/levels/all")
     .then((res) => res.json())
@@ -20,6 +25,37 @@ const loadLevelWord = (id) => {
       clickedBtn.classList.add("active"); // add active class
       displayLevelWord(data?.data);
     });
+};
+
+const loadWordDetail = async (id) => {
+  const url = `https://openapi.programming-hero.com/api/word/${id}`;
+  // console.log(url);
+  const res = await fetch(url);
+  const detail = await res.json();
+  displayWordDetail(detail?.data);
+};
+const displayWordDetail = (word) => {
+  const detailsBox = document.getElementById("details-container");
+  detailsBox.innerHTML = `
+  <div class="">
+            <h2 class="text-2xl font-bold">${word.word} (<i class="fa-solid fa-microphone-lines"></i> :${word.pronunciation})</h2>
+          </div>
+          <div class="">
+          <h2>Meaning</h2>
+          <p>${word.meaning}</p>
+        </div>
+        <div class="">
+          <h2>Example</h2>
+          <p>${word.sentence}</p>
+        </div>
+        <div class="">
+          <h2>Synonym</h2>
+          <div class="">
+          ${creatElement(word.synonyms)}
+        </div>
+        </div>
+  `;
+  document.getElementById("word_modal").showModal();
 };
 
 const displayLevelWord = (words) => {
@@ -48,10 +84,10 @@ const displayLevelWord = (words) => {
           "${word.meaning ? word.meaning : "অর্থ পাওয়া যায়নি"} / ${word.pronunciation ? word.pronunciation : "pronunciation পাওয়া যায়নি"}"
         </div>
         <div class="flex justify-between items-center">
-          <button class="btn bg-[#1A91FF10] hover:bg-[#1A91FF80]">
+          <button onclick="loadWordDetail(${word.id})" class="btn bg-[#1A91FF10] hover:bg-[#1A91FF80]">
             <i class="fa-solid fa-circle-info"></i>
           </button>
-          <button class="btn bg-[#1A91FF10] hover:bg-[#1A91FF80]">
+          <button  class="btn bg-[#1A91FF10] hover:bg-[#1A91FF80]">
             <i class="fa-solid fa-volume-high"></i>
           </button>
         </div>
