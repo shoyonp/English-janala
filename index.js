@@ -81,7 +81,7 @@ const displayLevelWord = (words) => {
         </p>
         <h2 class="text-4xl font-medium font-bangla">নেক্সট Lesson এ যান</h2>
       </div>`;
-      manageSpinner(false)
+    manageSpinner(false);
     return;
   }
   for (let word of words) {
@@ -128,3 +128,19 @@ const displayLessons = (lessons) => {
   }
 };
 loadLessons();
+
+document.getElementById("btn-search").addEventListener("click", async () => {
+  removeActive();
+  const input = document.getElementById("input-search");
+  const searchValue = input.value.trim().toLowerCase();
+  console.log(searchValue);
+
+  const url = "https://openapi.programming-hero.com/api/words/all";
+  const res = await fetch(url);
+  const data = await res.json();
+  const allWords = data.data;
+  const filterWords = allWords.filter((word) =>
+    word.word.toLowerCase().includes(searchValue),
+  );
+  displayLevelWord(filterWords);
+});
